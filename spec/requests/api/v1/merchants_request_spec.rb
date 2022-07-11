@@ -31,6 +31,6 @@ RSpec.describe "Merchants API" do
 
     merchant = JSON.parse(response.body, symbolize_names: true)
 
-    binding.pry
+    # binding.pry
   end
 end
