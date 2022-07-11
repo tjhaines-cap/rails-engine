@@ -12,7 +12,7 @@ RSpec.describe "Merchants API" do
     merchants = JSON.parse(response.body, symbolize_names: true)
 
     expect(merchants.count).to eq(5)
-
+binding.pry
     merchants.each do |merchant|
       expect(merchant.keys).to include(:id, :name)
       expect(merchant[:id]).to be_a(Integer)
