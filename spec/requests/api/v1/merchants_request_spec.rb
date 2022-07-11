@@ -9,14 +9,16 @@ RSpec.describe "Merchants API" do
 
     expect(response).to be_successful
 
-    merchants = JSON.parse(response.body, symbolize_names: true)
+    body = JSON.parse(response.body, symbolize_names: true)
 
+    expect(body).to have_key(:data)
+    merchants = body[:data]
     expect(merchants.count).to eq(5)
-binding.pry
     merchants.each do |merchant|
-      expect(merchant.keys).to include(:id, :name)
-      expect(merchant[:id]).to be_a(Integer)
-      expect(merchant[:name]).to be_a(String)
+      expect(merchant.keys).to include(:id, :attributes)
+      attributes = merchant[:attributes]
+      expect(attributes).to have_key(:name)
+      expect(attributes[:name]).to be_a(String)
     end
   end
 end

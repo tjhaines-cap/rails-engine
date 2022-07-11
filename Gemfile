@@ -35,6 +35,7 @@ group :development, :test do
   gem 'pry'
   gem 'factory_bot_rails'
   gem 'faker'
+  gem 'jsonapi-serializer'
 end
 
 group :development do
