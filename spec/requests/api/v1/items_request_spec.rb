@@ -9,7 +9,7 @@ RSpec.describe "Items API" do
     
     expect(response).to be_successful
 
-    body = JSON.parse(r esponse.body, symbolize_names: true)
+    body = JSON.parse(response.body, symbolize_names: true)
     expect(body).to have_key(:data)
     items = body[:data]
     items.each do |item|
