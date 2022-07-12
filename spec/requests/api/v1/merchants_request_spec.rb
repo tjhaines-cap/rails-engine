@@ -41,7 +41,9 @@ RSpec.describe "Merchants API" do
 
   it "gets merchant items" do
     id = create(:merchant).id
+    id2 = create(:merchant).id
     create_list(:item, 5, merchant_id: id)
+    item6 = create(:item, merchant_id: id2)
 
     get "/api/v1/merchants/#{id}/items"
 
@@ -58,6 +60,8 @@ RSpec.describe "Merchants API" do
       expect(attributes[:name]).to be_a(String)
       expect(attributes[:unit_price]).to be_a(Float)
       expect(attributes[:merchant_id]).to be_a(Integer)
+      expect(attributes[:merchant_id]).to eq(id)
+      expect(attributes[:merchant_id]).to_not eq(id2)
     end
   end
 end
