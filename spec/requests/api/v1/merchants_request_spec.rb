@@ -73,6 +73,10 @@ RSpec.describe "Merchants API" do
       get "/api/v1/merchants/535"
       expect(response.status).to eq(404)
     end
-    
+
+    it "returns error if items requested for merchant that does not exist" do
+      get "/api/v1/merchants/535/items"
+      expect(response.status).to eq(404)
+    end
   end
 end
