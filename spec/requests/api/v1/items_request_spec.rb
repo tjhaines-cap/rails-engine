@@ -102,6 +102,15 @@ RSpec.describe "Items API" do
       expect(attributes[:unit_price]).to eq(item.unit_price)
       expect(attributes[:merchant_id]).to eq(item.merchant_id)
     end
+
+    it "can delete an item" do
+      merchant1 = create(:merchant)
+      item = create(:item, merchant_id: merchant1.id)
+
+      delete "/api/v1/items/#{item.id}"
+
+      expect(response.status).to eq(204)
+    end
   end
 
   describe "sad path" do
