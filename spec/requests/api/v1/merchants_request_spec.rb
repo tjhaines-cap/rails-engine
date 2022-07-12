@@ -46,11 +46,12 @@ RSpec.describe "Merchants API" do
     get "/api/v1/merchants/#{id}/items"
 
     expect(response.status).to eq(200)
+    body = JSON.parse(response.body, symbolize_names: true)
     expect(body).to have_key(:data)
     items = body[:data]
-    expect(items.keys).to include(:id, :attributes)
+    expect(items.length).to eq(5)
     items.each do |item|
-      expect(item.keys).to include(:id, :attributes)#, :relationships)
+      expect(item.keys).to include(:id, :attributes)
       attributes = item[:attributes]
       expect(attributes.keys).to include(:name, :description, :unit_price, :merchant_id)
       expect(attributes[:name]).to be_a(String)

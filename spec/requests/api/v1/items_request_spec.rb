@@ -13,6 +13,7 @@ RSpec.describe "Items API" do
     body = JSON.parse(response.body, symbolize_names: true)
     expect(body).to have_key(:data)
     items = body[:data]
+    expect(items.length).to eq(5)
     items.each do |item|
       expect(item.keys).to include(:id, :attributes)
       attributes = item[:attributes]
