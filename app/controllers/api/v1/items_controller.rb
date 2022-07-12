@@ -23,10 +23,14 @@ class Api::V1::ItemsController < ApplicationController
   end
 
   def update
-    if Item.exists?(params[:id]) && Merchant.exists?(params[:merchant_id])
-      item = Item.find(params[:id])
-      item.update(item_params)
-      render json: ItemSerializer.new(item)
+    if Item.exists?(params[:id])
+      if (params[:merchant_id] && Merchant.exists?(params[:merchant_id])) || !params[:merchant_id]
+          item = Item.find(params[:id])
+          item.update(item_params)
+          render json: ItemSerializer.new(item)
+      else
+        render status: :not_found
+      end
     else
       render status: :not_found
     end

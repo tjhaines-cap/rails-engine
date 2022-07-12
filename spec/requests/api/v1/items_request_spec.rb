@@ -84,6 +84,24 @@ RSpec.describe "Items API" do
       expect(attributes[:unit_price]).to eq(15.99)
       expect(attributes[:merchant_id]).to eq(merchant1.id)
     end
+
+    it "can update item with only partial data" do
+      merchant1 = create(:merchant)
+      item = create(:item, merchant_id: merchant1.id)
+
+      patch "/api/v1/items/#{item.id}", params: {name: "Movie", description: "A DVD"}
+
+      expect(response.status).to eq(200) 
+      body = JSON.parse(response.body, symbolize_names: true)
+      item_data = body[:data]
+      attributes = item_data[:attributes]
+    
+      expect(attributes.keys).to include(:name, :description, :unit_price, :merchant_id)
+      expect(attributes[:name]).to eq("Movie")
+      expect(attributes[:description]).to eq("A DVD")
+      expect(attributes[:unit_price]).to eq(item.unit_price)
+      expect(attributes[:merchant_id]).to eq(item.merchant_id)
+    end
   end
 
   describe "sad path" do
