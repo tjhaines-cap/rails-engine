@@ -106,8 +106,11 @@ RSpec.describe "Items API" do
       expect(response.status).to eq(404)
     end
 
-    xit "returns error if invlaid merchant id is given for patch request" do
-      
+    it "returns error if invlaid merchant id is given for patch request" do
+      merchant1 = create(:merchant)
+      id = create(:item, merchant_id: merchant1.id).id
+      patch "/api/v1/items/#{id}", params: {name: "Movie", description: "A DVD", unit_price: 15.99, merchant_id: 235}
+      expect(response.status).to eq(404)
     end
   end
 end
