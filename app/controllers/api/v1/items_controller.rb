@@ -9,15 +9,13 @@ class Api::V1::ItemsController < ApplicationController
   end
 
   def create
-    # binding.pry
     item = Item.new(item_params)
     if item.save
       item_serialized = ItemSerializer.new(item)
       render json: item_serialized, status: :created
     else
-      # render json: item.errors, status: :unprocessable_entity
+      render json: item.errors, status: :unprocessable_entity
     end
-    # render json: ItemSerializer.new(item)
   end
 
   private

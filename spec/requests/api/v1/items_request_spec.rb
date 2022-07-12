@@ -70,6 +70,6 @@ RSpec.describe "Items API" do
   it "returns error if any attribute is missing from post request" do
     merchant1 = create(:merchant)
     post "/api/v1/items", params: {name: "Movie", description: "A DVD", unit_price: 15.00}
-    expect(response.status).to eq(400)
+    expect(response.status).to eq(422)
   end
 end
