@@ -21,7 +21,7 @@ RSpec.describe "Items API" do
         attributes = item[:attributes]
         expect(attributes.keys).to include(:name, :description, :unit_price, :merchant_id)
         expect(attributes[:name]).to be_a(String)
-        expect(attributes[:name]).to be_a(String)
+        expect(attributes[:description]).to be_a(String)
         expect(attributes[:unit_price]).to be_a(Float)
         expect(attributes[:merchant_id]).to be_a(Integer)
       end
@@ -46,7 +46,7 @@ RSpec.describe "Items API" do
       attributes = item[:attributes]
       expect(attributes.keys).to include(:name, :description, :unit_price, :merchant_id)
       expect(attributes[:name]).to be_a(String)
-      expect(attributes[:name]).to be_a(String)
+      expect(attributes[:description]).to be_a(String)
       expect(attributes[:unit_price]).to be_a(Float)
       expect(attributes[:merchant_id]).to be_a(Integer)
     end
@@ -63,9 +63,27 @@ RSpec.describe "Items API" do
       attributes = item[:attributes]
       expect(attributes.keys).to include(:name, :description, :unit_price, :merchant_id)
       expect(attributes[:name]).to be_a(String)
-      expect(attributes[:name]).to be_a(String)
+      expect(attributes[:description]).to be_a(String)
       expect(attributes[:unit_price]).to be_a(Float)
       expect(attributes[:merchant_id]).to be_a(Integer)
+    end
+
+    it "can update an item" do
+      merchant1 = create(:merchant)
+      id = create(:item, merchant_id: merchant1.id).id
+
+      patch "/api/v1/items/#{id}", params: {name: "Movie", description: "A DVD", unit_price: 15.99, merchant_id: merchant1.id}
+
+      expect(response.status).to eq(200) 
+      body = JSON.parse(response.body, symbolize_names: true)
+      item = body[:data]
+      attributes = item[:attributes]
+      expect(attributes.keys).to include(:name, :description, :unit_price, :merchant_id)
+      # binding.pry
+      expect(attributes[:name]).to eq("Movie")
+      expect(attributes[:description]).to eq("A DVD")
+      expect(attributes[:unit_price]).to eq(15.99)
+      expect(attributes[:merchant_id]).to eq(merchant1.id)
     end
   end
 
@@ -79,9 +97,9 @@ RSpec.describe "Items API" do
     it "returns error if any or all attributes are missing from post request" do
       merchant1 = create(:merchant)
       post "/api/v1/items", params: {name: "Movie", description: "A DVD", unit_price: 15.00}
-      expect(response.status).to eq(422)
+      expect(response.status).to eq(404)
       post "/api/v1/items"
-      expect(response.status).to eq(422)
+      expect(response.status).to eq(404)
     end
   end
 end
