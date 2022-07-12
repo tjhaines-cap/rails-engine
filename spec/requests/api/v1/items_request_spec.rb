@@ -70,10 +70,12 @@ RSpec.describe "Items API" do
   end
 
   describe "sad path" do
+    
     it "returns error if item requested does not exist" do
       get "/api/v1/items/535"
-      expect(response.stats).to eq(404)
+      expect(response.status).to eq(404)
     end
+
     it "returns error if any or all attributes are missing from post request" do
       merchant1 = create(:merchant)
       post "/api/v1/items", params: {name: "Movie", description: "A DVD", unit_price: 15.00}
