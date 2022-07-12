@@ -52,11 +52,10 @@ RSpec.describe "Items API" do
 
   it "creates an item" do
     merchant1 = create(:merchant)
-    # item = create(:item, merchant_id: merchant1.id)
     post "/api/v1/items", params: {name: "Movie", description: "A DVD", unit_price: 15.00, merchant_id: merchant1.id}
     expect(response.status).to eq(201)
     body = JSON.parse(response.body, symbolize_names: true)
-    # binding.pry
+    
     expect(body).to have_key(:data)
 
     item = body[:data]
@@ -66,5 +65,11 @@ RSpec.describe "Items API" do
     expect(attributes[:name]).to be_a(String)
     expect(attributes[:unit_price]).to be_a(Float)
     expect(attributes[:merchant_id]).to be_a(Integer)
+  end
+
+  it "returns error if any attribute is missing from post request" do
+    merchant1 = create(:merchant)
+    post "/api/v1/items", params: {name: "Movie", description: "A DVD", unit_price: 15.00}
+    expect(response.status).to eq(400)
   end
 end
