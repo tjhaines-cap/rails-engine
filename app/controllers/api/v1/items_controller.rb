@@ -1,7 +1,8 @@
 class Api::V1::ItemsController < ApplicationController
 
   def index
-    render json: Item.all
+    render json: ItemSerializer.new(Item.all)
+    # render json: (Item.all)
   end
 
 end
