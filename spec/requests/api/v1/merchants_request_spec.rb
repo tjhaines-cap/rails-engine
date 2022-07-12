@@ -38,4 +38,30 @@ RSpec.describe "Merchants API" do
     expect(attributes).to have_key(:name)
     expect(attributes[:name]).to be_a(String)
   end
+
+  it "gets merchant items" do
+    id = create(:merchant).id
+    id2 = create(:merchant).id
+    create_list(:item, 5, merchant_id: id)
+    item6 = create(:item, merchant_id: id2)
+
+    get "/api/v1/merchants/#{id}/items"
+
+    expect(response.status).to eq(200)
+    body = JSON.parse(response.body, symbolize_names: true)
+    expect(body).to have_key(:data)
+    items = body[:data]
+    expect(items.length).to eq(5)
+    items.each do |item|
+      expect(item.keys).to include(:id, :attributes)
+      attributes = item[:attributes]
+      expect(attributes.keys).to include(:name, :description, :unit_price, :merchant_id)
+      expect(attributes[:name]).to be_a(String)
+      expect(attributes[:name]).to be_a(String)
+      expect(attributes[:unit_price]).to be_a(Float)
+      expect(attributes[:merchant_id]).to be_a(Integer)
+      expect(attributes[:merchant_id]).to eq(id)
+      expect(attributes[:merchant_id]).to_not eq(id2)
+    end
+  end
 end
