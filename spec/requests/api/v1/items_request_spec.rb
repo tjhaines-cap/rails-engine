@@ -111,6 +111,10 @@ RSpec.describe "Items API" do
 
       expect(response.status).to eq(204)
     end
+
+    xit "can delete an item and invoice if the item is the only one on the invoice" do
+
+    end
   end
 
   describe "sad path" do
@@ -137,6 +141,11 @@ RSpec.describe "Items API" do
       merchant1 = create(:merchant)
       id = create(:item, merchant_id: merchant1.id).id
       patch "/api/v1/items/#{id}", params: {name: "Movie", description: "A DVD", unit_price: 15.99, merchant_id: 235}
+      expect(response.status).to eq(404)
+    end
+
+    it "returns error if the item being deleted does not exist" do
+      delete "/api/v1/items/532"
       expect(response.status).to eq(404)
     end
   end

@@ -37,8 +37,12 @@ class Api::V1::ItemsController < ApplicationController
   end
 
   def destroy
-    item = Item.find(params[:id])
-    item.destroy
+    if Item.exists?(params[:id])
+      item = Item.find(params[:id])
+      item.destroy
+    else
+      render status: :not_found
+    end
   end
 
   private
