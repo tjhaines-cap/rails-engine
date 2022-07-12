@@ -79,7 +79,6 @@ RSpec.describe "Items API" do
       item = body[:data]
       attributes = item[:attributes]
       expect(attributes.keys).to include(:name, :description, :unit_price, :merchant_id)
-      # binding.pry
       expect(attributes[:name]).to eq("Movie")
       expect(attributes[:description]).to eq("A DVD")
       expect(attributes[:unit_price]).to eq(15.99)
@@ -100,6 +99,15 @@ RSpec.describe "Items API" do
       expect(response.status).to eq(404)
       post "/api/v1/items"
       expect(response.status).to eq(404)
+    end
+
+    it "returns error if invlaid item id is given in patch request path" do
+      patch "/api/v1/items/535"
+      expect(response.status).to eq(404)
+    end
+
+    xit "returns error if invlaid merchant id is given for patch request" do
+      
     end
   end
 end
