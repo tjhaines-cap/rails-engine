@@ -14,6 +14,7 @@ RSpec.describe "Items API" do
     expect(body).to have_key(:data)
     items = body[:data]
     expect(items.length).to eq(5)
+    
     items.each do |item|
       expect(item.keys).to include(:id, :attributes)
       attributes = item[:attributes]
@@ -28,6 +29,7 @@ RSpec.describe "Items API" do
   it "gets one item" do
     merchant1 = create(:merchant)
     id = create(:item, merchant_id: merchant1.id).id
+    item2 = create(:item, merchant_id: merchant1.id)
 
     get "/api/v1/items/#{id}"
 
@@ -37,6 +39,9 @@ RSpec.describe "Items API" do
     expect(body).to have_key(:data)
     item = body[:data]
     expect(item.keys).to include(:id, :attributes)
+    expect(item[:id]).to eq("#{id}")
+    expect(item[:id]).to_not eq("#{item2.id}")
+
     attributes = item[:attributes]
     expect(attributes.keys).to include(:name, :description, :unit_price, :merchant_id)
     expect(attributes[:name]).to be_a(String)
