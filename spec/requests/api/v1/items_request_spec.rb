@@ -106,10 +106,12 @@ RSpec.describe "Items API" do
     it "can delete an item" do
       merchant1 = create(:merchant)
       item = create(:item, merchant_id: merchant1.id)
+      expect(Item.all).to eq([item])
 
       delete "/api/v1/items/#{item.id}"
 
       expect(response.status).to eq(204)
+      expect(Item.all).to eq([])
     end
 
     xit "can delete an item and invoice if the item is the only one on the invoice" do
