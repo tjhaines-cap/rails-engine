@@ -132,6 +132,7 @@ RSpec.describe "Items API" do
       expect(Invoice.all.length).to eq(1)
       expect(Invoice.all).to eq([invoices.last])
       expect(Item.all).to eq([item2])
+    end
 
     it "can get the merchant data for an item" do
       merchant1 = create(:merchant)
