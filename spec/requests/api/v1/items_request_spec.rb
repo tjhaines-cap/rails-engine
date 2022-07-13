@@ -102,6 +102,25 @@ RSpec.describe "Items API" do
       expect(attributes[:unit_price]).to eq(item.unit_price)
       expect(attributes[:merchant_id]).to eq(item.merchant_id)
     end
+
+    it "can get the merchant data for an item" do
+      merchant1 = create(:merchant)
+      merchant2 = create(:merchant)
+      item = create(:item, merchant_id: merchant1.id)
+
+      get "/api/v1/items/#{item.id}/merchant"
+
+      expect(response.status).to eq(200)
+      body = JSON.parse(response.body, symbolize_names: true)
+      expect(body).to have_key(:data)
+      merchant = body[:data]
+      
+      expect(merchant.keys).to include(:id, :attributes)
+      expect(merchant[:id]).to eq(merchant1.id)
+      attributes = merchant[:attributes]
+      expect(attributes).to have_key(:name)
+      expect(attributes[:name]).to be_a(String)
+    end
   end
 
   describe "sad path" do
