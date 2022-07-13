@@ -65,6 +65,21 @@ RSpec.describe "Merchants API" do
         expect(attributes[:merchant_id]).to_not eq(id2)
       end
     end
+
+    it "can find a single merchant which matches a search term" do
+      merchant = create(:merchant, name: "Turing")
+      create(:merchant, name: "Ring World")
+
+      get "/api/v1/merchants/find?name=ring"
+      
+      expect(response.status).to eq(200)
+      body = JSON.parse(response.body, symbolize_names: true)
+      expect(body).to have_key(:data)
+      merchant = body[:data]
+      attributes = merchant[:attributes]
+      expect(attributes[:name]).to eq("Ring World")
+
+    end
   end
 
   describe "sad path" do
@@ -77,6 +92,18 @@ RSpec.describe "Merchants API" do
     it "returns error if items requested for merchant that does not exist" do
       get "/api/v1/merchants/535/items"
       expect(response.status).to eq(404)
+    end
+
+    it "returns object with nil values if no merchant name matches the provided search" do
+      merchant = create(:merchant, name: "Turing")
+      create(:merchant, name: "Ring World")
+
+      get "/api/v1/merchants/find?name=hello"
+      body = JSON.parse(response.body, symbolize_names: true)
+      expect(body).to have_key(:data)
+      merchant_body = body[:data]
+      expect(merchant_body[:id]).to eq(nil)
+      expect(merchant_body[:attributes][:name]).to eq(nil)
     end
   end
 end

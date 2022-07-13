@@ -4,4 +4,21 @@ RSpec.describe Item, type: :model do
   it { should belong_to :merchant }
   it { should have_many :invoice_items }
   it { should have_many(:invoices).through(:invoice_items) }
+
+  it "can destroy invoices where the current item is the only item on the invoice" do
+    customer1 = create(:customer)
+    merchant1 = create(:merchant)
+    invoices = create_list(:invoice, 3, {customer_id: customer1.id, merchant_id: merchant1.id})
+    item1 = create(:item, merchant_id: merchant1.id)
+    item2 = create(:item, merchant_id: merchant1.id)
+    invoice_item1 = create(:invoice_item, {item_id: item1.id, invoice_id: invoices.first.id})
+    invoice_item2 = create(:invoice_item, {item_id: item1.id, invoice_id: invoices[1].id})
+    invoice_item3 = create(:invoice_item, {item_id: item2.id, invoice_id: invoices.last.id})
+    invoice_item4 = create(:invoice_item, {item_id: item1.id, invoice_id: invoices.last.id})
+
+    expect(Invoice.all.length).to eq(3)
+    item1.destroy_invoices
+    expect(Invoice.all.length).to eq(1)
+    expect(Invoice.all.first).to eq(invoices.last)
+  end
 end
