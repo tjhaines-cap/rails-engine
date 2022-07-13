@@ -149,5 +149,10 @@ RSpec.describe "Items API" do
       patch "/api/v1/items/#{id}", params: {name: "Movie", description: "A DVD", unit_price: 15.99, merchant_id: 235}
       expect(response.status).to eq(404)
     end
+
+    it "returns error if invalid item id is given" do
+      get "/api/v1/items/524/merchant"
+      expect(response.status).to eq(404)
+    end
   end
 end
