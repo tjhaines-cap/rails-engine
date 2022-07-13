@@ -38,6 +38,7 @@ class Api::V1::ItemsController < ApplicationController
   def destroy
     if Item.exists?(params[:id])
       item = Item.find(params[:id])
+      item.destroy_invoices
       item.destroy
     else
       render status: :not_found

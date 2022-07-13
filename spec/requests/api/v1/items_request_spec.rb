@@ -114,8 +114,23 @@ RSpec.describe "Items API" do
       expect(Item.all).to eq([])
     end
 
-    xit "can delete an item and invoice if the item is the only one on the invoice" do
+    it "can delete an item and invoice if the item is the only one on the invoice" do
+      customer1 = create(:customer)
+      merchant1 = create(:merchant)
+      invoices = create_list(:invoice, 2, {customer_id: customer1.id, merchant_id: merchant1.id})
+      item1 = create(:item, merchant_id: merchant1.id)
+      item2 = create(:item, merchant_id: merchant1.id)
+      invoice_item1 = create(:invoice_item, {item_id: item1.id, invoice_id: invoices.first.id})
+      invoice_item2 = create(:invoice_item, {item_id: item1.id, invoice_id: invoices.last.id})
+      invoice_item3 = create(:invoice_item, {item_id: item2.id, invoice_id: invoices.last.id})
+      invoice_item4 = create(:invoice_item, {item_id: item1.id, invoice_id: invoices.first.id})
 
+      expect(Invoice.all.length).to eq(2)
+      delete "/api/v1/items/#{item1.id}"
+
+      expect(Invoice.all.length).to eq(1)
+      expect(Invoice.all).to eq([invoices.last])
+      expect(Item.all).to eq([item2])
     end
   end
 
