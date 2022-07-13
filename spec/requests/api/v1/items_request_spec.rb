@@ -103,6 +103,7 @@ RSpec.describe "Items API" do
       expect(attributes[:merchant_id]).to eq(item.merchant_id)
     end
 
+
     it "can delete an item" do
       merchant1 = create(:merchant)
       item = create(:item, merchant_id: merchant1.id)
@@ -131,6 +132,24 @@ RSpec.describe "Items API" do
       expect(Invoice.all.length).to eq(1)
       expect(Invoice.all).to eq([invoices.last])
       expect(Item.all).to eq([item2])
+
+    it "can get the merchant data for an item" do
+      merchant1 = create(:merchant)
+      merchant2 = create(:merchant)
+      item = create(:item, merchant_id: merchant1.id)
+
+      get "/api/v1/items/#{item.id}/merchant"
+
+      expect(response.status).to eq(200)
+      body = JSON.parse(response.body, symbolize_names: true)
+      expect(body).to have_key(:data)
+      merchant = body[:data]
+
+      expect(merchant.keys).to include(:id, :attributes)
+      expect(merchant[:id]).to eq(merchant1.id.to_s)
+      attributes = merchant[:attributes]
+      expect(attributes).to have_key(:name)
+      expect(attributes[:name]).to eq(merchant1.name)
     end
   end
 
@@ -160,9 +179,14 @@ RSpec.describe "Items API" do
       patch "/api/v1/items/#{id}", params: {name: "Movie", description: "A DVD", unit_price: 15.99, merchant_id: 235}
       expect(response.status).to eq(404)
     end
-
+    
     it "returns error if the item being deleted does not exist" do
       delete "/api/v1/items/532"
+      expect(response.status).to eq(404)
+    end
+    
+    it "returns error if invalid item id is given" do
+      get "/api/v1/items/524/merchant"
       expect(response.status).to eq(404)
     end
   end
