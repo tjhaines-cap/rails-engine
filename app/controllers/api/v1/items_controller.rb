@@ -15,7 +15,6 @@ class Api::V1::ItemsController < ApplicationController
   def create
     item = Item.new(item_params)
     if item.save
-      # item_serialized = ItemSerializer.new(item)
       render json: ItemSerializer.new(item), status: :created
     else
       render json: item.errors, status: :not_found
@@ -31,6 +30,16 @@ class Api::V1::ItemsController < ApplicationController
       else
         render status: :not_found
       end
+    else
+      render status: :not_found
+    end
+  end
+
+  def destroy
+    if Item.exists?(params[:id])
+      item = Item.find(params[:id])
+      item.destroy_invoices
+      item.destroy
     else
       render status: :not_found
     end

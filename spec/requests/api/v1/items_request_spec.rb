@@ -103,6 +103,36 @@ RSpec.describe "Items API" do
       expect(attributes[:merchant_id]).to eq(item.merchant_id)
     end
 
+
+    it "can delete an item" do
+      merchant1 = create(:merchant)
+      item = create(:item, merchant_id: merchant1.id)
+      expect(Item.all).to eq([item])
+
+      delete "/api/v1/items/#{item.id}"
+
+      expect(response.status).to eq(204)
+      expect(Item.all).to eq([])
+    end
+
+    it "can delete an item and invoice if the item is the only one on the invoice" do
+      customer1 = create(:customer)
+      merchant1 = create(:merchant)
+      invoices = create_list(:invoice, 2, {customer_id: customer1.id, merchant_id: merchant1.id})
+      item1 = create(:item, merchant_id: merchant1.id)
+      item2 = create(:item, merchant_id: merchant1.id)
+      invoice_item1 = create(:invoice_item, {item_id: item1.id, invoice_id: invoices.first.id})
+      invoice_item2 = create(:invoice_item, {item_id: item1.id, invoice_id: invoices.last.id})
+      invoice_item3 = create(:invoice_item, {item_id: item2.id, invoice_id: invoices.last.id})
+      invoice_item4 = create(:invoice_item, {item_id: item1.id, invoice_id: invoices.first.id})
+
+      expect(Invoice.all.length).to eq(2)
+      delete "/api/v1/items/#{item1.id}"
+
+      expect(Invoice.all.length).to eq(1)
+      expect(Invoice.all).to eq([invoices.last])
+      expect(Item.all).to eq([item2])
+
     it "can get the merchant data for an item" do
       merchant1 = create(:merchant)
       merchant2 = create(:merchant)
@@ -149,7 +179,12 @@ RSpec.describe "Items API" do
       patch "/api/v1/items/#{id}", params: {name: "Movie", description: "A DVD", unit_price: 15.99, merchant_id: 235}
       expect(response.status).to eq(404)
     end
-
+    
+    it "returns error if the item being deleted does not exist" do
+      delete "/api/v1/items/532"
+      expect(response.status).to eq(404)
+    end
+    
     it "returns error if invalid item id is given" do
       get "/api/v1/items/524/merchant"
       expect(response.status).to eq(404)
