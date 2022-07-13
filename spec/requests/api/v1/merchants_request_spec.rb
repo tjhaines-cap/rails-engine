@@ -65,6 +65,20 @@ RSpec.describe "Merchants API" do
         expect(attributes[:merchant_id]).to_not eq(id2)
       end
     end
+
+    it "can find a single merchant which matches a search term" do
+      create(:merchant, name: "Turing")
+      create(:merchant, name: "Ring World")
+
+      get "/api/vi/merchants/find?name=ring"
+
+      expect(response.status).to eq(200)
+      body = JSON.parse(respones.body, symbolize_names: true)
+      expect(body).to have_key(:data)
+      merchant = body[:data]
+      attributes = merchant[:attributes]
+      expect(attributes[:name]).to eq("Ring World")
+    end
   end
 
   describe "sad path" do
