@@ -36,8 +36,8 @@ RSpec.describe Item, type: :model do
     item1 = create(:item, { unit_price: 105.99, merchant_id: merchant1.id })
     item2 = create(:item, { unit_price: 99.99, merchant_id: merchant1.id })
     item3 = create(:item, { unit_price: 85.99, merchant_id: merchant1.id })
-    expect(Item.find_by_price({max: 100.00, min: 89.99})).to eq([item2])
     expect(Item.find_by_price({max: 100.00})).to eq([item2, item3])
     expect(Item.find_by_price({min: 89.99})).to eq([item1, item2])
+    expect(Item.find_by_price({min: 89.99, max: 100.00})).to eq([item2])
   end
 end
