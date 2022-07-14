@@ -199,7 +199,7 @@ RSpec.describe "Items API" do
       body = JSON.parse(response.body, symbolize_names: true)
       expect(body).to have_key(:data)
       items = body[:data]
-      expect(items.length).to eq(2)
+      expect(items.length).to eq(1)
       expect(items[0][:attributes][:unit_price]).to eq(99.99)
     end
   end

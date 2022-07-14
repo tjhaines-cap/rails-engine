@@ -49,6 +49,9 @@ class Api::V1::ItemsController < ApplicationController
     if params[:name]
       items = Item.find_by_name(params[:name])
       render json: ItemSerializer.new(items)
+    elsif params.keys.include?("min_price") || params.keys.include?("max_price")
+      items = Item.find_by_price(find_by_price_params)
+      render json: ItemSerializer.new(items)
     end
   end
 
@@ -56,6 +59,10 @@ class Api::V1::ItemsController < ApplicationController
 
     def item_params
       params.permit(:name, :description, :unit_price, :merchant_id)
+    end
+
+    def find_by_price_params
+      params.permit(:min_price, :max_price)
     end
 
 end
