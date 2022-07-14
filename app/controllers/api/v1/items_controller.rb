@@ -45,6 +45,13 @@ class Api::V1::ItemsController < ApplicationController
     end
   end
 
+  def find
+    if params[:name]
+      items = Item.find_by_name(params[:name])
+      render json: ItemSerializer.new(items)
+    end
+  end
+
   private
 
     def item_params

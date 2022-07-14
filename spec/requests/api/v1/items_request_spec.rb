@@ -165,9 +165,8 @@ RSpec.describe "Items API" do
       expect(body).to have_key(:data)
       items = body[:data]
       expect(items.length).to eq(2)
-      expect(items.values).to include("Wedding ring")
-      expect(items.values).to include("Ring")
-      expect(items.values).to_not include("Necklace")
+      expect(items[0][:attributes][:name]).to eq("Ring")
+      expect(items[1][:attributes][:name]).to eq("Wedding ring")
 
     end
 
