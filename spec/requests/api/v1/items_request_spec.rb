@@ -153,10 +153,38 @@ RSpec.describe "Items API" do
       expect(attributes[:name]).to eq(merchant1.name)
     end
 
-    it "can get all items that meet a search criteria" do
+    it "can get all items that meet a partial case insensitive search for the name" do
+      merchant1 = create(:merchant)
+      create(:item, { name: "Wedding ring", merchant_id: merchant1.id })
+      create(:item, { name: "Ring", merchant_id: merchant1.id })
+      create(:item, { name: "Necklace", merchant_id: merchant1.id })
+      
+      get "/api/v1/items/find?name=ring"
+      expect(response.status).to eq(200)
+      body = JSON.parse(response.body, symbolize_names: true)
+      expect(body).to have_key(:data)
+      items = body[:data]
+      expect(items.length).to eq(2)
+      expect(items.values).to include("Wedding ring")
+      expect(items.values).to include("Ring")
+      expect(items.values).to_not include("Necklace")
 
     end
+
+    it "can get all items based on min max price search criteria" do
+      merchant1 = create(:merchant)
+      create(:item, { unit_price: 105.99, merchant_id: merchant1.id })
+      create(:item, { unit_price: 99.99, merchant_id: merchant1.id })
+      create(:item, { unit_price: 85.99, merchant_id: merchant1.id })
+      
+      get "/api/v1/items/find?min_price=95"
+
+      get "/api/v1/items/find?max_price=100"
+
+      get "/api/v1/items/find?max_price=100&min_price=90"
+    end
   end
+
 
   describe "sad path" do
     

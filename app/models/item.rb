@@ -18,12 +18,12 @@ class Item < ApplicationRecord
   end
 
   def self.find_by_price(min_max)
-    if min_max.keys == [:min, :max]
-      where("#{min_max[:min]} < unit_price").where("unit_price < #{min_max[:max]}")
-    elsif min_max.keys == [:min]
-      where("#{min_max[:min]} < unit_price")
-    elsif min_max.keys == [:max]
-      where("unit_price < #{min_max[:max]}")
+    if min_max.keys == [:min_price, :max_price]
+      where("#{min_max[:min_price]} < unit_price").where("unit_price < #{min_max[:max_price]}")
+    elsif min_max.keys == [:min_price]
+      where("#{min_max[:min_price]} < unit_price")
+    elsif min_max.keys == [:max_price]
+      where("unit_price < #{min_max[:max_price]}")
     end
   end
 end
