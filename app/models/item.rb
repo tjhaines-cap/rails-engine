@@ -14,7 +14,6 @@ class Item < ApplicationRecord
   end
 
   def self.find_by_name(name)
-    # binding.pry
     order(:name).where("name ILIKE ?", "%#{name}%")
   end
 

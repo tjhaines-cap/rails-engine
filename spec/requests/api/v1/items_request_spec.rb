@@ -177,10 +177,30 @@ RSpec.describe "Items API" do
       create(:item, { unit_price: 85.99, merchant_id: merchant1.id })
       
       get "/api/v1/items/find?min_price=95"
+      expect(response.status).to eq(200)
+      body = JSON.parse(response.body, symbolize_names: true)
+      expect(body).to have_key(:data)
+      items = body[:data]
+      expect(items.length).to eq(2)
+      expect(items[0][:attributes][:unit_price]).to eq(105.99)
+      expect(items[1][:attributes][:unit_price]).to eq(99.99)
 
       get "/api/v1/items/find?max_price=100"
+      expect(response.status).to eq(200)
+      body = JSON.parse(response.body, symbolize_names: true)
+      expect(body).to have_key(:data)
+      items = body[:data]
+      expect(items.length).to eq(2)
+      expect(items[0][:attributes][:unit_price]).to eq(99.99)
+      expect(items[1][:attributes][:unit_price]).to eq(85.99)
 
       get "/api/v1/items/find?max_price=100&min_price=90"
+      expect(response.status).to eq(200)
+      body = JSON.parse(response.body, symbolize_names: true)
+      expect(body).to have_key(:data)
+      items = body[:data]
+      expect(items.length).to eq(2)
+      expect(items[0][:attributes][:unit_price]).to eq(99.99)
     end
   end
 
