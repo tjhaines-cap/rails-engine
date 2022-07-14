@@ -21,4 +21,13 @@ RSpec.describe Item, type: :model do
     expect(Invoice.all.length).to eq(1)
     expect(Invoice.all.first).to eq(invoices.last)
   end
+
+  it "can find all items that is a partial case insensitive match for name given, sorted alphabetically" do
+    merchant1 = create(:merchant)
+    item1 = create(:item, { name: "Ring", merchant_id: merchant1.id })
+    item2 = create(:item, { name: "Wedding ring", merchant_id: merchant1.id })
+    item3 = create(:item, { name: "Necklace", merchant_id: merchant1.id })
+    items = Item.find_by_name("ring")
+    expect(items).to eq([item2, item1])
+  end
 end

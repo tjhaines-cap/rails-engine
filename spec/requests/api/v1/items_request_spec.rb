@@ -152,6 +152,10 @@ RSpec.describe "Items API" do
       expect(attributes).to have_key(:name)
       expect(attributes[:name]).to eq(merchant1.name)
     end
+
+    it "can get all items that meet a search criteria" do
+
+    end
   end
 
   describe "sad path" do
