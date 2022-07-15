@@ -1,24 +1,30 @@
-# README
+# Rails Engine
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+This application exposes data through an API about merchants and items.
 
-Things you may want to cover:
+### Versions
 
-* Ruby version
+Ruby: 2.7.2
+Rails: 5.2.6
 
-* System dependencies
+### Installation
 
-* Configuration
+```
+git clone https://github.com/tjhaines-cap/rails-engine
+cd rails-engine
+bundle install
+rails db:{drop,create,migrate,seed}
+rails db:shema:dump
+```
 
-* Database creation
+### Example Endpoints
 
-* Database initialization
+To get all merchant information
+```
+get "/api/v1/merchants"
+```
 
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
+To search for a merchant by name
+```
+get "/api/v1/merchants/find?name=Turing"
+```
