@@ -46,7 +46,9 @@ class Api::V1::ItemsController < ApplicationController
   end
 
   def find_all
-    if params[:name]
+    if !find_by_price_params.empty? && params[:name]
+      render status: :bad_request
+    elsif params[:name]
       items = Item.find_by_name(params[:name])
       render json: ItemSerializer.new(items)
     elsif !find_by_price_params.empty?

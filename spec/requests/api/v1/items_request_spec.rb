@@ -261,5 +261,14 @@ RSpec.describe "Items API" do
       items = body[:data]
       expect(items).to eq([])
     end
+
+    it "returns error if name and price query parameters are given" do
+      merchant1 = create(:merchant)
+      create(:item, { name: "Wedding ring", unit_price: 500.50, merchant_id: merchant1.id })
+      create(:item, { name: "Ring", unit_price: 699.99, merchant_id: merchant1.id })
+      
+      get "/api/v1/items/find_all?name=doughnut&max_price=200"
+      expect(response.status).to eq(400)
+    end
   end
 end
