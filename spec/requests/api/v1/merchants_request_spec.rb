@@ -112,5 +112,14 @@ RSpec.describe "Merchants API" do
       body = JSON.parse(response.body, symbolize_names: true)
       expect(body).to have_key(:error)
     end
+
+    it "returns error if no params given for find" do
+      merchant = create(:merchant, name: "Turing")
+      create(:merchant, name: "Ring World")
+
+      get "/api/v1/merchants/find"
+
+      expect(response.status).to eq(400)
+    end
   end
 end
