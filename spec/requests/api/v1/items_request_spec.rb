@@ -241,5 +241,26 @@ RSpec.describe "Items API" do
       get "/api/v1/items/524/merchant"
       expect(response.status).to eq(404)
     end
+
+    it "returns empty array if no items match search criteria" do
+      merchant1 = create(:merchant)
+      create(:item, { name: "Wedding ring", unit_price: 500.50, merchant_id: merchant1.id })
+      create(:item, { name: "Ring", unit_price: 699.99, merchant_id: merchant1.id })
+      
+      get "/api/v1/items/find?name=doughnut"
+      expect(response.status).to eq(200)
+      body = JSON.parse(response.body, symbolize_names: true)
+      expect(body).to have_key(:data)
+      items = body[:data]
+      expect(items).to eq([])
+
+      get "/api/v1/items/find?max_price=100&min_price=90"
+      expect(response.status).to eq(200)
+      body = JSON.parse(response.body, symbolize_names: true)
+      expect(body).to have_key(:data)
+      items = body[:data]
+      binding.pry
+      expect(items).to eq([])
+    end
   end
 end

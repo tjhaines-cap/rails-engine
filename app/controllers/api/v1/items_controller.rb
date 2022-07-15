@@ -49,7 +49,7 @@ class Api::V1::ItemsController < ApplicationController
     if params[:name]
       items = Item.find_by_name(params[:name])
       render json: ItemSerializer.new(items)
-    elsif params.keys.include?("min_price") || params.keys.include?("max_price")
+    elsif !find_by_price_params.empty?
       items = Item.find_by_price(find_by_price_params)
       render json: ItemSerializer.new(items)
     end
