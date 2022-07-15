@@ -113,12 +113,13 @@ RSpec.describe "Merchants API" do
       expect(body).to have_key(:error)
     end
 
-    it "returns error if no params given for find" do
+    it "returns error if no params given or name param is empty for find" do
       merchant = create(:merchant, name: "Turing")
       create(:merchant, name: "Ring World")
 
       get "/api/v1/merchants/find"
-
+      expect(response.status).to eq(400)
+      get "/api/v1/merchants/find?name="
       expect(response.status).to eq(400)
     end
   end

@@ -13,9 +13,10 @@ class Api::V1::MerchantsController < ApplicationController
     end
 
     def find
-      binding.pry
       merchant = Merchant.find_by_name(params[:name])
-      if merchant 
+      if !params[:name] || params[:name] == ""
+        render status: :bad_request
+      elsif merchant 
         render json: MerchantSerializer.new(Merchant.find_by_name(params[:name]))
       else
         render json: MerchantSerializer.new(Merchant.new(id: nil, name: nil))
