@@ -105,5 +105,22 @@ RSpec.describe "Merchants API" do
       expect(merchant_body[:id]).to eq(nil)
       expect(merchant_body[:attributes][:name]).to eq(nil)
     end
+
+    it "returns error when string instead of number is used for merchant id" do
+      get "/api/v1/merchants/string-instead-of-integer/items"
+      expect(response.status).to eq(404)
+      body = JSON.parse(response.body, symbolize_names: true)
+      expect(body).to have_key(:error)
+    end
+
+    it "returns error if no params given or name param is empty for find" do
+      merchant = create(:merchant, name: "Turing")
+      create(:merchant, name: "Ring World")
+
+      get "/api/v1/merchants/find"
+      expect(response.status).to eq(400)
+      get "/api/v1/merchants/find?name="
+      expect(response.status).to eq(400)
+    end
   end
 end

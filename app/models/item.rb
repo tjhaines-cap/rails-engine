@@ -19,11 +19,11 @@ class Item < ApplicationRecord
 
   def self.find_by_price(min_max)
     if min_max.keys == ["min_price", "max_price"]
-      return where("#{min_max["min_price"]} < unit_price").where("unit_price < #{min_max["max_price"]}")
+      where("#{min_max["min_price"]} < unit_price").where("unit_price < #{min_max["max_price"]}")
     elsif min_max.keys == ["min_price"]
-      return where("#{min_max["min_price"]} < unit_price")
+      where("#{min_max["min_price"]} < unit_price")
     elsif min_max.keys == ["max_price"]
-      return where("unit_price < #{min_max["max_price"]}")
+      where("unit_price < #{min_max["max_price"]}")
     end
   end
 end
