@@ -270,5 +270,12 @@ RSpec.describe "Items API" do
       get "/api/v1/items/find_all?name=doughnut&max_price=200"
       expect(response.status).to eq(400)
     end
+
+    it "returns error if no params given or empty name param for find_all" do
+      get"/api/v1/items/find_all"
+      expect(response.status).to eq(400)
+      get"/api/v1/items/find_all?name="
+      expect(response.status).to eq(400)
+    end
   end
 end
