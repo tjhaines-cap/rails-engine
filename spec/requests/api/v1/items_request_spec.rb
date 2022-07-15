@@ -276,6 +276,8 @@ RSpec.describe "Items API" do
       expect(response.status).to eq(400)
       get"/api/v1/items/find_all?name="
       expect(response.status).to eq(400)
+      get"/api/v1/items/find_all?max_price=&min_price=10"
+      expect(response.status).to eq(400)
     end
   end
 end
