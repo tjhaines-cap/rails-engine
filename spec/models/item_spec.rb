@@ -15,6 +15,7 @@ RSpec.describe Item, type: :model do
     invoice_item2 = create(:invoice_item, {item_id: item1.id, invoice_id: invoices[1].id})
     invoice_item3 = create(:invoice_item, {item_id: item2.id, invoice_id: invoices.last.id})
     invoice_item4 = create(:invoice_item, {item_id: item1.id, invoice_id: invoices.last.id})
+    invoice_item5 = create(:invoice_item, {item_id: item1.id, invoice_id: invoices.last.id})
 
     expect(Invoice.all.length).to eq(3)
     item1.destroy_invoices
