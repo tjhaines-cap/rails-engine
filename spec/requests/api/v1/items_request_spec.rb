@@ -152,7 +152,58 @@ RSpec.describe "Items API" do
       expect(attributes).to have_key(:name)
       expect(attributes[:name]).to eq(merchant1.name)
     end
+
+    it "can get all items that meet a partial case insensitive search for the name" do
+      merchant1 = create(:merchant)
+      create(:item, { name: "Wedding ring", merchant_id: merchant1.id })
+      create(:item, { name: "Ring", merchant_id: merchant1.id })
+      create(:item, { name: "Necklace", merchant_id: merchant1.id })
+      
+      get "/api/v1/items/find_all?name=ring"
+      expect(response.status).to eq(200)
+      body = JSON.parse(response.body, symbolize_names: true)
+      expect(body).to have_key(:data)
+      items = body[:data]
+      expect(items.length).to eq(2)
+      expect(items[0][:attributes][:name]).to eq("Ring")
+      expect(items[1][:attributes][:name]).to eq("Wedding ring")
+
+    end
+
+    it "can get all items based on min max price search criteria" do
+      merchant1 = create(:merchant)
+      create(:item, { unit_price: 105.99, merchant_id: merchant1.id })
+      create(:item, { unit_price: 99.99, merchant_id: merchant1.id })
+      create(:item, { unit_price: 85.99, merchant_id: merchant1.id })
+      
+      get "/api/v1/items/find_all?min_price=95"
+      expect(response.status).to eq(200)
+      body = JSON.parse(response.body, symbolize_names: true)
+      expect(body).to have_key(:data)
+      items = body[:data]
+      expect(items.length).to eq(2)
+      expect(items[0][:attributes][:unit_price]).to eq(105.99)
+      expect(items[1][:attributes][:unit_price]).to eq(99.99)
+
+      get "/api/v1/items/find_all?max_price=100"
+      expect(response.status).to eq(200)
+      body = JSON.parse(response.body, symbolize_names: true)
+      expect(body).to have_key(:data)
+      items = body[:data]
+      expect(items.length).to eq(2)
+      expect(items[0][:attributes][:unit_price]).to eq(99.99)
+      expect(items[1][:attributes][:unit_price]).to eq(85.99)
+
+      get "/api/v1/items/find_all?max_price=100&min_price=90"
+      expect(response.status).to eq(200)
+      body = JSON.parse(response.body, symbolize_names: true)
+      expect(body).to have_key(:data)
+      items = body[:data]
+      expect(items.length).to eq(1)
+      expect(items[0][:attributes][:unit_price]).to eq(99.99)
+    end
   end
+
 
   describe "sad path" do
     
@@ -189,6 +240,35 @@ RSpec.describe "Items API" do
     it "returns error if invalid item id is given" do
       get "/api/v1/items/524/merchant"
       expect(response.status).to eq(404)
+    end
+
+    it "returns empty array if no items match search criteria" do
+      merchant1 = create(:merchant)
+      create(:item, { name: "Wedding ring", unit_price: 500.50, merchant_id: merchant1.id })
+      create(:item, { name: "Ring", unit_price: 699.99, merchant_id: merchant1.id })
+      
+      get "/api/v1/items/find_all?name=doughnut"
+      expect(response.status).to eq(200)
+      body = JSON.parse(response.body, symbolize_names: true)
+      expect(body).to have_key(:data)
+      items = body[:data]
+      expect(items).to eq([])
+
+      get "/api/v1/items/find_all?max_price=100&min_price=90"
+      expect(response.status).to eq(200)
+      body = JSON.parse(response.body, symbolize_names: true)
+      expect(body).to have_key(:data)
+      items = body[:data]
+      expect(items).to eq([])
+    end
+
+    it "returns error if name and price query parameters are given" do
+      merchant1 = create(:merchant)
+      create(:item, { name: "Wedding ring", unit_price: 500.50, merchant_id: merchant1.id })
+      create(:item, { name: "Ring", unit_price: 699.99, merchant_id: merchant1.id })
+      
+      get "/api/v1/items/find_all?name=doughnut&max_price=200"
+      expect(response.status).to eq(400)
     end
   end
 end

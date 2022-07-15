@@ -67,7 +67,7 @@ RSpec.describe "Merchants API" do
     end
 
     it "can find a single merchant which matches a search term" do
-      merchant = create(:merchant, name: "Turing")
+      create(:merchant, name: "Turing")
       create(:merchant, name: "Ring World")
 
       get "/api/v1/merchants/find?name=ring"

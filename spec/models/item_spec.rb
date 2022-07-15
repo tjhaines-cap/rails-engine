@@ -21,4 +21,23 @@ RSpec.describe Item, type: :model do
     expect(Invoice.all.length).to eq(1)
     expect(Invoice.all.first).to eq(invoices.last)
   end
+
+  it "can find all items that is a partial case insensitive match for name given, sorted alphabetically" do
+    merchant1 = create(:merchant)
+    item1 = create(:item, { name: "Wedding ring", merchant_id: merchant1.id })
+    item2 = create(:item, { name: "Ring", merchant_id: merchant1.id })
+    item3 = create(:item, { name: "Necklace", merchant_id: merchant1.id })
+    items = Item.find_by_name("ring")
+    expect(items).to eq([item2, item1])
+  end
+
+  it "can find all items that meet a max and/or min price criteria" do 
+    merchant1 = create(:merchant)
+    item1 = create(:item, { unit_price: 105.99, merchant_id: merchant1.id })
+    item2 = create(:item, { unit_price: 99.99, merchant_id: merchant1.id })
+    item3 = create(:item, { unit_price: 85.99, merchant_id: merchant1.id })
+    expect(Item.find_by_price({"max_price" => 100.00})).to eq([item2, item3])
+    expect(Item.find_by_price({"min_price" => 89.99})).to eq([item1, item2])
+    expect(Item.find_by_price({"min_price" => 89.99, "max_price" => 100.00})).to eq([item2])
+  end
 end

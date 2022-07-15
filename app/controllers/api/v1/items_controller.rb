@@ -45,10 +45,26 @@ class Api::V1::ItemsController < ApplicationController
     end
   end
 
+  def find_all
+    if !find_by_price_params.empty? && params[:name]
+      render status: :bad_request
+    elsif params[:name]
+      items = Item.find_by_name(params[:name])
+      render json: ItemSerializer.new(items)
+    elsif !find_by_price_params.empty?
+      items = Item.find_by_price(find_by_price_params)
+      render json: ItemSerializer.new(items)
+    end
+  end
+
   private
 
     def item_params
       params.permit(:name, :description, :unit_price, :merchant_id)
+    end
+
+    def find_by_price_params
+      params.permit(:min_price, :max_price)
     end
 
 end
