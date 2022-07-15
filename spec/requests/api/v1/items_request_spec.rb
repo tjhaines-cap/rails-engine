@@ -159,7 +159,7 @@ RSpec.describe "Items API" do
       create(:item, { name: "Ring", merchant_id: merchant1.id })
       create(:item, { name: "Necklace", merchant_id: merchant1.id })
       
-      get "/api/v1/items/find?name=ring"
+      get "/api/v1/items/find_all?name=ring"
       expect(response.status).to eq(200)
       body = JSON.parse(response.body, symbolize_names: true)
       expect(body).to have_key(:data)
@@ -176,7 +176,7 @@ RSpec.describe "Items API" do
       create(:item, { unit_price: 99.99, merchant_id: merchant1.id })
       create(:item, { unit_price: 85.99, merchant_id: merchant1.id })
       
-      get "/api/v1/items/find?min_price=95"
+      get "/api/v1/items/find_all?min_price=95"
       expect(response.status).to eq(200)
       body = JSON.parse(response.body, symbolize_names: true)
       expect(body).to have_key(:data)
@@ -185,7 +185,7 @@ RSpec.describe "Items API" do
       expect(items[0][:attributes][:unit_price]).to eq(105.99)
       expect(items[1][:attributes][:unit_price]).to eq(99.99)
 
-      get "/api/v1/items/find?max_price=100"
+      get "/api/v1/items/find_all?max_price=100"
       expect(response.status).to eq(200)
       body = JSON.parse(response.body, symbolize_names: true)
       expect(body).to have_key(:data)
@@ -194,7 +194,7 @@ RSpec.describe "Items API" do
       expect(items[0][:attributes][:unit_price]).to eq(99.99)
       expect(items[1][:attributes][:unit_price]).to eq(85.99)
 
-      get "/api/v1/items/find?max_price=100&min_price=90"
+      get "/api/v1/items/find_all?max_price=100&min_price=90"
       expect(response.status).to eq(200)
       body = JSON.parse(response.body, symbolize_names: true)
       expect(body).to have_key(:data)
@@ -247,19 +247,18 @@ RSpec.describe "Items API" do
       create(:item, { name: "Wedding ring", unit_price: 500.50, merchant_id: merchant1.id })
       create(:item, { name: "Ring", unit_price: 699.99, merchant_id: merchant1.id })
       
-      get "/api/v1/items/find?name=doughnut"
+      get "/api/v1/items/find_all?name=doughnut"
       expect(response.status).to eq(200)
       body = JSON.parse(response.body, symbolize_names: true)
       expect(body).to have_key(:data)
       items = body[:data]
       expect(items).to eq([])
 
-      get "/api/v1/items/find?max_price=100&min_price=90"
+      get "/api/v1/items/find_all?max_price=100&min_price=90"
       expect(response.status).to eq(200)
       body = JSON.parse(response.body, symbolize_names: true)
       expect(body).to have_key(:data)
       items = body[:data]
-      binding.pry
       expect(items).to eq([])
     end
   end
