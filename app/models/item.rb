@@ -18,6 +18,7 @@ class Item < ApplicationRecord
   end
 
   def self.find_by_price(min_max)
+    #take advantage of default parameters, min = 0, max = max capacity for float
     if min_max.keys == ["min_price", "max_price"]
       where("#{min_max["min_price"]} < unit_price").where("unit_price < #{min_max["max_price"]}")
     elsif min_max.keys == ["min_price"]
